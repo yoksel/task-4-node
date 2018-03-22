@@ -1,0 +1,35 @@
+$color-gray: #DDD;
+$color-mid-gray: #AAA;
+
+BODY {
+  padding: 20px;
+  font: 14px/1.5 "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+A {
+  display: inline-block;
+  color: #00B7FF;
+}
+
+UL {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+UL * UL {
+  margin-left: 1rem;
+}
+
+.current {
+  display: inline-block;
+  padding: 2px 5px;
+  background: crimson;
+  border-radius: 3px;
+  color: #FFF;
+}
+
+.message {
+  margin-bottom: 20px;
+}
+

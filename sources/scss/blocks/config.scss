@@ -1,0 +1,21 @@
+.config {
+  margin: 0;
+}
+
+.config__item {
+  display: flex;
+  padding-bottom: 5px;
+}
+
+.config__prop {
+  flex-basis: 40px;
+  font-weight: bold;
+}
+
+.config__val {
+  margin-left: 5px;
+  flex-basis: 80%;
+  flex-grow: 1;
+}
+
+

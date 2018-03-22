@@ -1,0 +1,11 @@
+<div class="files">
+  <ul class="files__list">
+    {{#each files}}
+      <li class="files__item">
+        {{#if this.prefix}}
+          {{this.prefix}}/
+        {{/if}}<a href="?file={{this.path}}&hash={{this.hash}}">{{this.name}}</a>
+      </li>
+    {{/each}}
+  </ul>
+</div>

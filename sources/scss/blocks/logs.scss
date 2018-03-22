@@ -1,0 +1,41 @@
+.logs__list {
+  margin: 0;
+  margin-top: 20px;
+  padding: 0;
+
+  max-height: 40vh;
+  overflow: auto;
+}
+
+.logs__item {
+  position: relative;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  padding-right: 10px;
+  padding-left: 10px;
+  border-bottom: 1px solid $color-gray;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+
+.logs__meta {
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+  font-size: .8em;
+}
+
+.logs__hash {
+  font-style: italic;
+}
+
+.logs__time {
+  color: $color-mid-gray;
+}
+
+.logs__title {
+  font-weight: bold;
+}

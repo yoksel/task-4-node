@@ -1,0 +1,25 @@
+<header class="header">
+  <h1>{{title}}</h1>
+
+  {{> config}}
+</header>
+
+<div class="message"></div>
+
+<main class="main">
+  <div class="columns">
+    <div class="columns__item columns__item--branches">
+      {{> branches}}
+    </div>
+
+    <div class="columns__item columns__item--files">
+      {{> files}}
+    </div>
+
+    <div class="columns__item columns__item--file-viewer">
+{{# if file}}
+{{> file_viewer}}
+{{/ if}}
+    </div>
+  </div>
+</main>

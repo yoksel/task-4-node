@@ -1,0 +1,23 @@
+.columns {
+  display: flex;
+  justify-content: space-between;
+}
+
+.columns__item {
+  margin-right: 20px;
+  padding-right: 20px;
+  flex-basis: 20%;
+  box-sizing: border-box;
+  border-right: 1px solid $color-gray;
+
+  &:last-child {
+    margin-right: 0;
+    padding-right: 0;
+    border-right: 0;
+  }
+
+  &--files,
+  &--file-viewer {
+    flex-grow: 1;
+  }
+}

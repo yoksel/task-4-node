@@ -1,0 +1,16 @@
+<ul class="logs__list">
+  {{#each logs}}
+    <li class="logs__item">
+      <span class="logs__title">{{title}}</span> by  <a href="mailto:{{email}}">{{author}}</a>
+      <div class="logs__meta">
+        <a class="logs__hash
+          {{#if class}}
+            {{class}}
+          {{/if}}
+          "
+          href="?commit={{hash}}&branch={{branch}}"
+          >{{hash}}</a>
+        <span class="logs__time">{{time}}</span> </div>
+    </li>
+  {{/each}}
+</ul>

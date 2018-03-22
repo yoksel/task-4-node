@@ -1,0 +1,20 @@
+<nav class="branches">
+  <ul class="branches__list">
+    {{#each branches}}
+      <li class="branches__item">
+        <a
+          {{#if class }}
+            class="{{ class }}"
+          {{else}}
+            href="?branch={{ name }}"
+          {{/if}}
+          >{{name}}</a>
+
+        {{#if class }}
+          <a href="?logs"></a>
+          {{> logs}}
+        {{/if}}
+      </li>
+    {{/each}}
+  </ul>
+</nav>

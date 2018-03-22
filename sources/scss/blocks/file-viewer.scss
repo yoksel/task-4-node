@@ -1,0 +1,31 @@
+.file-viewer {
+  position: sticky;
+  top: 20px;
+}
+
+.file-viewer__path {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 0 10px;
+  background: #DDD;
+  border-radius: 3px;
+  font-weight: bold;
+  font-style: italic;
+}
+
+.file-viewer__content {
+  max-width: 500px;
+  max-height: 500px;
+  overflow: auto;
+
+  PRE {
+    margin: 0;
+    tab-size: 2;
+  }
+}
+
+.file-viewer__img {
+  max-width: 500px;
+  height: auto;
+  border: 1px solid #DDD;
+}

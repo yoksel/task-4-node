@@ -1,0 +1,11 @@
+<div class="file-viewer">
+  <div class="file-viewer__path">{{file.path}}</div>
+
+  <div class="file-viewer__content">
+    {{#if file.isImg}}
+      <img src="{{file.content}}" class="file-viewer__img">
+    {{else}}
+<code class="file-viewer__code"><pre>{{file.content}}</pre></code>
+    {{/ if}}
+  </div>
+</div>
