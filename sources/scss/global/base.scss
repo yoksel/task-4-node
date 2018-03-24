@@ -4,8 +4,8 @@ $color-mid-gray: #AAA;
 BODY {
   margin: 0;
   padding: 20px;
-  padding-top: 45px; /* Space for message */
-  font: 14px/1.5 "Lucida Grande", Helvetica, Arial, sans-serif;
+  padding-top: 25px;
+  font: 14px/1.5 Lucida Grande, Helvetica, Arial, sans-serif;
 }
 
 A {
@@ -30,15 +30,3 @@ UL * UL {
   border-radius: 3px;
   color: #FFF;
 }
-
-.message {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  padding: 0 20px;
-  z-index: 1;
-  background: lightgoldenrodyellow;
-  line-height: 2;
-}
-

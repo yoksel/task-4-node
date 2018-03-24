@@ -23,7 +23,7 @@ gulp.task('js', () => {
   ])
     .pipe(concat('common.js'))
     .pipe(babel())
-    .pipe(gulp.dest('./public/assets/js'))
+    .pipe(gulp.dest('./public/assets/js'));
 });
 
 gulp.task('style', () => {
@@ -34,7 +34,7 @@ gulp.task('style', () => {
     .pipe(gulp.dest('./public/assets/css'))
     .pipe(csso())
     .pipe(rename('styles.min.css'))
-    .pipe(gulp.dest('./public/assets/css'))
+    .pipe(gulp.dest('./public/assets/css'));
 });
 
 gulp.task('build', function (done) {
