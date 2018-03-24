@@ -13,6 +13,7 @@ const hashLength = 10;
 const globalData = {
   branches: [],
   currentBranch: '',
+  commit: '',
   gitContext: '',
   files: [],
   file: '',
@@ -36,8 +37,23 @@ webSocketServer.on('connection', function(ws) {
     .then((response => {
 
       ws.on('message', function(message) {
-        console.log('\nMessage resived ');
         const queriesObj = parseQueries(message);
+        globalData.file = '';
+        globalData.filesTreeContext = {};
+        globalData.gitContext = '';
+
+        globalData.currentBranch = queriesObj.branch;
+        globalData.gitContext = globalData.currentBranch;
+
+        if (queriesObj.folder) {
+          globalData.filesTreeContext.currentType = 'folder';
+          globalData.filesTreeContext.folder = queriesObj.folder;
+        }
+
+        if (queriesObj.commit && queriesObj.commit !== '') {
+          globalData.gitContext = queriesObj.commit;
+          globalData.commit = queriesObj.commit;
+        }
 
         // If file
         if (queriesObj['file']) {
@@ -54,46 +70,65 @@ webSocketServer.on('connection', function(ws) {
               }
             })
             .catch(error => {
-              console.log(`\nError in prepareTemplates(): ${error}`);
+              console.log(`\nError in getFileContentByHash():\n\t${error}`);
             });
         }
-        // If logs
-        else if (queriesObj['logs']) {
-          getLogs()
+        // If folder
+        else if (queriesObj.folder) {
+          execGitCmd({
+            command: `git ls-tree --abbrev=${hashLength} ${globalData.gitContext} ${queriesObj.folder}`,
+            cwd: dirPath
+          })
           .then(response => {
-            const commitsData = fillTemplate('logser', {logs: response});
+            const dataSrc = response.split('\t');
+            const hash = dataSrc[0].split(' ')[2];
+            globalData.filesTreeContext.currentHash = hash;
 
-            const result = {
-              command: 'logs',
-              data: commitsData
-            };
+            getFilesTree()
+              .then(filesList => {
+                const files = fillTemplate('files', {
+                  filesNav: filesList.nav,
+                  files: filesList.list
+                });
 
-            for (var key in clients) {
-              clients[key].send(JSON.stringify(result));
-            }
+                const result = {
+                  command: 'folder',
+                  data: {
+                    files: files
+                  }
+                };
+
+                for (var key in clients) {
+                  clients[key].send(JSON.stringify(result));
+                }
+              })
+              .catch(error => {
+                console.log(`\nPromises failed in getFilesTree():\n\t${error}`);
+              });
+
           })
           .catch(error => {
-            console.log(`\nPromises failed in getLogs(): ${error}`);
+            console.log(`\nPromises failed in queriesObj.folder:\n\t${error}`);
           });
         }
+
         // If branch
-        else if (queriesObj['branch']) {
-          globalData.currentBranch = queriesObj['branch'];
-          globalData.gitContext = globalData.currentBranch;
-
-          if (queriesObj.commit && queriesObj.commit !== '') {
-            globalData.gitContext = queriesObj.commit;
-          }
-
+        else if (queriesObj.branch) {
           Promise.all([getBranches(), getLogs(), getFilesTree()])
             .then(([branchesList, logs, filesList]) => {
+
               branchesList.forEach(branch => {
                 if (branch.class) {
                   branch.logs = logs
                 }
               });
-              const branches = fillTemplate('branches', {branches: branchesList})
-              const files = fillTemplate('files', {files: filesList})
+              const branches = fillTemplate('branches', {branches: branchesList});
+
+              const files = fillTemplate('files', {
+                filesNav: filesList.nav,
+                files: filesList.list
+              });
+
               const result = {
                 command: 'branch',
                 data: {
@@ -105,10 +140,9 @@ webSocketServer.on('connection', function(ws) {
               for (var key in clients) {
                 clients[key].send(JSON.stringify(result));
               }
-
             })
             .catch(error => {
-              console.log(`\nPromises failed in get branches data: ${error}`);
+              console.log(`\nPromises failed in get branches data:\n\t${error}`);
             });
         }
       });
@@ -144,9 +178,6 @@ function handleRequest (req, res) {
   globalData.gitContext = '';
 
   if (Object.keys(req.query).length > 0 ) {
-    console.log('\n=== req.query: \n', req.query);
-    console.log('-------------------');
-
     if (query.branch && query.branch !== '') {
       globalData.currentBranch = query.branch;
       let context = query.branch;
@@ -156,7 +187,13 @@ function handleRequest (req, res) {
       }
       if (query.commit && query.commit !== '') {
         globalData.gitContext = query.commit;
-        let context = query.commit;
+        globalData.commit = query.commit;
+        context = query.commit;
+        globalData.filesTreeContext.currentHash = query.commit;
+      }
+      if (query.folder) {
+        globalData.filesTreeContext.currentType = 'folder';
+        globalData.filesTreeContext.folder = query.folder;
       }
 
       // Get file
@@ -171,7 +208,7 @@ function handleRequest (req, res) {
             globalData.filesTreeContext.folder = folder;
 
             execGitCmd({
-              command: `git ls-tree --abbrev=${hashLength} ${globalData.currentBranch} ${folder}`,
+              command: `git ls-tree --abbrev=${hashLength} ${globalData.gitContext} ${folder}`,
               cwd: dirPath
             })
             .then(response => {
@@ -181,21 +218,18 @@ function handleRequest (req, res) {
               execCommands();
             })
             .catch(error => {
-              console.log(`\nPromises failed in execGitCmd() with ls-tree: ${error}`);
+              console.log(`\nPromises failed in execGitCmd() with ls-tree:\n\t${error}`);
               execCommands();
             });
           })
           .catch(error => {
-            console.log(`\nPromises failed in getFileContentByHash(): ${error}`);
+            console.log(`\nPromises failed in getFileContentByHash():\n\t${error}`);
           });
       }
       // Get folder
       else if (query.folder && query.folder != '') {
-        globalData.filesTreeContext.currentType = 'folder';
-        globalData.filesTreeContext.folder = query.folder;
-
         execGitCmd({
-          command: `git ls-tree --abbrev=${hashLength} ${globalData.currentBranch} ${query.folder}`,
+          command: `git ls-tree --abbrev=${hashLength} ${globalData.gitContext} ${query.folder}`,
           cwd: dirPath
         })
         .then(response => {
@@ -205,7 +239,7 @@ function handleRequest (req, res) {
           execCommands();
         })
         .catch(error => {
-          console.log(`\nPromises failed in handleRequest(): ${error}`);
+          console.log(`\nPromises failed in handleRequest():\n\t${error}`);
           execCommands();
         });
       }
@@ -243,12 +277,12 @@ function execCommands() {
           renderPage();
         })
         .catch(error => {
-          console.log(`\nPromises failed in getFilesTree(): ${error}`);
+          console.log(`\nPromises failed in getFilesTree():\n\t${error}`);
           renderPage();
         });
     })
     .catch(error => {
-      console.log(`\nPromises failed in execCommands(): ${error}`);
+      console.log(`\nPromises failed in execCommands():\n\t${error}`);
       renderPage();
     });
 }
@@ -284,7 +318,7 @@ function getLogs() {
   const logsPromise = new Promise((resolve, reject) => {
 
     execGitCmd({
-      command: `git log ${globalData.currentBranch} --pretty=format:"%h|%an|%ae|%ar|%s"`,
+      command: `git log --pretty=format:"%h|%an|%ae|%ar|%s" ${globalData.currentBranch}`,
       cwd: dirPath
     })
     .then(response => {
@@ -312,7 +346,7 @@ function getLogs() {
       resolve(commitsList);
     })
     .catch(error => {
-      console.log(`\nPromises failed in getLogs(): ${error}`);
+      console.log(`\nPromises failed in getLogs():\n\t${error}`);
       reject(error);
     });
   });
@@ -326,8 +360,8 @@ function getFilesTree() {
   if (globalData.filesTreeContext.currentHash && globalData.filesTreeContext.currentHash !== '') {
     context = globalData.filesTreeContext.currentHash;
   }
-  else if (globalData.filesTreeContext.gitContext && globalData.filesTreeContext.gitContext !== '') {
-    context = globalData.filesTreeContext.gitContext;
+  else if (globalData.gitContext && globalData.gitContext !== '') {
+    context = globalData.gitContext;
   }
 
   const filesPromise = new Promise((resolve, reject) => {
@@ -353,21 +387,28 @@ function getFilesTree() {
         if (currentFolder) {
           const pathParts = currentFolder.split('/');
           const navItems = pathParts.slice(pathParts.length - 2);
+          let parentType = 'branch';
+          let parentName = '..';
+
+          const parentUrlParts = [
+            `branch=${globalData.currentBranch}`
+          ];
 
           if (pathParts.length > 1) {
-            nav.parent = {
-              name: navItems[0],
-              url: `folder=${navItems[0]}&branch=${globalData.currentBranch}`,
-              type: 'folder'
-            };
+            parentName = navItems[0];
+            parentUrlParts.push(`folder=${navItems[0]}`);
+            parentType = 'folder';
           }
-          else {
-            nav.parent = {
-              name: '..',
-              url: `branch=${globalData.currentBranch}`,
-              type: 'branch'
-            };
+
+          if (globalData.commit) {
+            parentUrlParts.push(`commit=${globalData.commit}`);
           }
+
+          nav.parent = {
+            name: parentName,
+            url: parentUrlParts.join('&'),
+            type: parentType
+          };
 
           nav.current = {
             name: navItems[navItems.length - 1],
@@ -382,7 +423,7 @@ function getFilesTree() {
             const blobDataArr = blobData.split(' ');
             const blobPathArr = blobPath.split('/');
             let blobName = blobPathArr.splice(blobPathArr.length - 1, 1)[0];
-            let prefix = '— ';
+            let prefix = '—&nbsp;';
             const blobHash = blobDataArr[2];
             let blobType = blobDataArr[1];
 
@@ -400,25 +441,11 @@ function getFilesTree() {
 
             let urlParts = [
               `${blobType}=${blobPath}`,
-              `hash=${blobHash}`
+              `branch=${globalData.currentBranch}`,
             ];
-            let currentData = {
-              folder: treeContext.folder,
-              hash: treeContext.currentHash,
-              type: 'folder'
-            };
 
-            if (!currentData.hash) {
-              currentData.folder = globalData.currentBranch;
-              currentData.hash = globalData.gitContext;
-              currentData.type = 'commit';
-            }
-
-            if (currentData.hash){
-              const currentUrlParams = [
-                `branch=${globalData.currentBranch}`
-              ];
-              urlParts = urlParts.concat(currentUrlParams);
+            if (globalData.commit) {
+              urlParts.push(`commit=${globalData.commit}`);
             }
 
             blobsList.push({
@@ -438,7 +465,7 @@ function getFilesTree() {
         });
       })
       .catch(error => {
-        console.log(`\nPromises failed in getFilesTree(): ${error}`);
+        console.log(`\nPromises failed in getFilesTree():\n\t${error}`);
         reject(error);
       });
   });
@@ -510,7 +537,7 @@ function getBranches() {
         resolve(dataList);
       })
       .catch(error => {
-        console.log(`\nPromises failed in getBranches(): ${error}`);
+        console.log(`\nPromises failed in getBranches():\n\t${error}`);
         reject(error);
       })
   });
@@ -573,7 +600,7 @@ function getFileContentByHash(queriesObj) {
         resolve(file);
       })
       .catch(error => {
-        console.log(`\nPromises failed in getFileContentByHash(): ${error}`);
+        console.log(`\nPromises failed in getFileContentByHash():\n\t${error}`);
       });
   });
 

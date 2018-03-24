@@ -12,7 +12,7 @@ let messageText = '';
 if (socket.readyState !== 3) {
 // Keep links always clickable
   main.addEventListener('click', (event) => {
-  return;
+  // return;
   const target = event.target;
   if (target.tagName !== 'A') {
     return;
@@ -59,8 +59,11 @@ socket.onmessage = function(event) {
   if (response.command === 'file') {
     fileViewerParent.innerHTML = (response.data);
   }
-  else if (response.command === 'logs') {
-    logsParent.innerHTML = (response.data);
+  else if (response.command === 'folder') {
+    // console.log('response.command FOLDER');
+    // console.log(response.data.files);
+    filesParent.innerHTML = (response.data.files);
+    fileViewerParent.innerHTML = '';
   }
   else if (response.command === 'branch') {
     branchesParent.innerHTML = (response.data.branches);

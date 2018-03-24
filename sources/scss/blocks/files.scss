@@ -1,8 +1,10 @@
 .files {
+  min-width: 200px;
   color: #CCC;
 }
 
 .files__nav {
+  white-space: nowrap;
   font-size: 1.2em;
 }
 

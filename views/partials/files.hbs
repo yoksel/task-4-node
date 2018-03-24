@@ -8,12 +8,11 @@
   {{/if}}
   <ul class="files__list">
     {{#each files}}
-      <li class="files__item">{{prefix}}<a
+      <li class="files__item">{{{prefix}}}<a
           class="
             files__link
             files__link--{{type}}"
-          href="?{{url}}
-          "
+          href="?{{url}}"
           >{{name}}</a>
       </li>
     {{/each}}
