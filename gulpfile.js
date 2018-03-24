@@ -31,7 +31,6 @@ gulp.task('style', () => {
     .pipe(plumber())
     .pipe(sass())
     .pipe(postcss([autoprefixer()]))
-    .pipe(gulp.dest('./public/assets/css'))
     .pipe(csso())
     .pipe(rename('styles.min.css'))
     .pipe(gulp.dest('./public/assets/css'));
