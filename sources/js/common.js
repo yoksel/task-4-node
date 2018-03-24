@@ -1,6 +1,5 @@
-var socket = new WebSocket('ws://localhost:8081');
+var socket = new WebSocket(`ws://${config.host}:8081`);
 
-var links = document.querySelectorAll('a');
 const main = document.querySelector('.main');
 var message = document.querySelector('.message');
 const fileViewerParent = document.querySelector('.columns__item--file-viewer');
@@ -9,9 +8,11 @@ const branchesParent = document.querySelector('.columns__item--branches');
 const filesParent = document.querySelector('.columns__item--files');
 let messageText = '';
 
+// If connection works
+if (socket.readyState !== 3) {
 // Keep links always clickable
-main.addEventListener('click', (event) => {
-  // return;
+  main.addEventListener('click', (event) => {
+  return;
   const target = event.target;
   if (target.tagName !== 'A') {
     return;
@@ -20,6 +21,8 @@ main.addEventListener('click', (event) => {
   var outgoingMessage = target.getAttribute('href').substr(1);
   socket.send(outgoingMessage);
 });
+}
+
 
 socket.onopen = function() {
   messageText = 'Соединение установлено.';
@@ -38,8 +41,14 @@ socket.onclose = function(event) {
     console.log(messageText);
     message.innerHTML = messageText;
   }
-  console.log('Код: ' + event.code + ' причина: ' + event.reason);
-  message.innerHTML = 'Код: ' + event.code + ' причина: ' + event.reason;
+
+  let reason = event.reason ? `Причина: ${event.reason}.` : '';
+  messageText = `Соединение прервано.${reason} Страница будет обновлена.`;
+  console.log(messageText);
+  message.innerHTML = messageText;
+
+  // TEMPORARY
+  document.location.reload();
 };
 
 socket.onmessage = function(event) {

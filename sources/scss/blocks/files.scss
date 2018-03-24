@@ -1,3 +1,23 @@
 .files {
   color: #CCC;
 }
+
+.files__nav {
+  font-size: 1.2em;
+}
+
+.files__parent-folder {
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.files__current-folder {
+  font-weight: bold;
+  color: #000;
+}
+
+.files__link {
+  &--folder {
+    font-weight: bold;
+  }
+}

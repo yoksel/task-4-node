@@ -1,10 +1,20 @@
 <div class="files">
+  {{#if filesNav.current.name}}
+    <div class="files__nav">
+      <a class="files__parent-folder"
+        href="?{{filesNav.parent.url}}">{{{filesNav.parent.name}}}</a>/<span
+        class="files__current-folder">{{filesNav.current.name}}</span>
+    </div>
+  {{/if}}
   <ul class="files__list">
     {{#each files}}
-      <li class="files__item">
-        {{#if this.prefix}}
-          {{this.prefix}}/
-        {{/if}}<a href="?file={{this.path}}&hash={{this.hash}}">{{this.name}}</a>
+      <li class="files__item">{{prefix}}<a
+          class="
+            files__link
+            files__link--{{type}}"
+          href="?{{url}}
+          "
+          >{{name}}</a>
       </li>
     {{/each}}
   </ul>
