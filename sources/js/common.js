@@ -23,42 +23,36 @@ if (socket.readyState !== 3) {
 
 socket.onopen = function () {
   messageText = 'Соединение установлено.';
-  console.log(messageText);
-  message.innerHTML = messageText;
+  // console.log(messageText);
 };
 
 socket.onclose = function (event) {
   if (event.wasClean) {
     messageText = 'Соединение закрыто чисто';
-    console.log(messageText);
-    message.innerHTML = messageText;
+    // console.log(messageText);
+
   } else {
     messageText = 'Обрыв соединения'; // например, 'убит' процесс сервера
-    console.log(messageText);
-    message.innerHTML = messageText;
+    // console.log(messageText);
+
   }
 
   let reason = event.reason ? `Причина: ${event.reason}.` : '';
   messageText = `Соединение прервано.${reason} Страница будет обновлена.`;
   console.log(messageText);
-  message.innerHTML = messageText;
-
-  // TEMPORARY
-  document.location.reload();
 };
 
 socket.onmessage = function (event) {
   const response = JSON.parse(event.data);
   messageText = 'Получены данные ';
-  message.innerHTML = messageText;
 
   if (response.command === 'file') {
     fileViewerParent.innerHTML = (response.data);
+
   } else if (response.command === 'folder') {
-    // console.log('response.command FOLDER');
-    // console.log(response.data.files);
     filesParent.innerHTML = (response.data.files);
     fileViewerParent.innerHTML = '';
+
   } else if (response.command === 'branch') {
     branchesParent.innerHTML = (response.data.branches);
     filesParent.innerHTML = (response.data.files);
@@ -68,5 +62,4 @@ socket.onmessage = function (event) {
 
 socket.onerror = function (error) {
   console.log('Ошибка ' + error.message);
-  message.innerHTML = 'Ошибка ' + error.message;
 };
