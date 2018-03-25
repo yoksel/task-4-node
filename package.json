@@ -7,7 +7,8 @@
     "build": "gulp build",
     "dev": "gulp start",
     "lint": "eslint '**/*.js' && stylelint sources/**/*.scss",
-    "test": "nyc --check-coverage --lines 60 npm test"
+    "test": "mocha --exit",
+    "coverage": "nyc --check-coverage --lines 60 mocha --exit"
   },
   "dependencies": {
     "body-parser": "~1.18.2",
