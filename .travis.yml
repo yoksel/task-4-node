@@ -5,5 +5,16 @@ node_js:
  - 'node'
  - 8
 
+install:
+- npm install
+
 script:
  - npm run lint
+
+services:
+- docker
+
+before_install:
+  - docker build -t myapp .
+  - docker run -d -p 3000:3000 -p 8081:8081 myapp
+  - docker ps -a
