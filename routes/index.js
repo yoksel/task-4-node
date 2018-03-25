@@ -37,27 +37,25 @@ webSocketServer.on('connection', function (ws) {
   Promise.all(prepareTemplates())
     .then(response => {
       ws.on('message', function (message) {
-        const queriesObj = parseQueries(message);
-        globalData.file = '';
-        globalData.filesTreeContext = {};
-        globalData.gitContext = '';
+        const query = parseQueries(message);
+        clearContext();
 
-        globalData.currentBranch = queriesObj.branch;
+        globalData.currentBranch = query.branch;
         globalData.gitContext = globalData.currentBranch;
 
-        if (queriesObj.folder) {
+        if (query.folder) {
           globalData.filesTreeContext.currentType = 'folder';
-          globalData.filesTreeContext.folder = queriesObj.folder;
+          globalData.filesTreeContext.folder = query.folder;
         }
 
-        if (queriesObj.commit && queriesObj.commit !== '') {
-          globalData.gitContext = queriesObj.commit;
-          globalData.commit = queriesObj.commit;
+        if (query.commit && query.commit !== '') {
+          globalData.gitContext = query.commit;
+          globalData.commit = query.commit;
         }
 
         // If file
-        if (queriesObj['file']) {
-          getFileContentByHash(queriesObj)
+        if (query.file) {
+          getFileContentByHash(query)
             .then(file => {
               resultData = fillTemplate('file_viewer', {file: file});
               const result = {
@@ -71,12 +69,12 @@ webSocketServer.on('connection', function (ws) {
             .catch(error => {
               console.log(`\nError in getFileContentByHash():\n\t${error}`);
             });
-        } else if (queriesObj.folder) {
-          getHashFromUrl(queriesObj.folder)
+        } else if (query.folder) {
+          getHashFromUrl(query.folder)
             .then(hash => {
               globalData.filesTreeContext.currentHash = hash;
               globalData.filesTreeContext.currentType = 'folder';
-              globalData.filesTreeContext.folder = queriesObj.folder;
+              globalData.filesTreeContext.folder = query.folder;
 
               getFilesTree()
                 .then(filesList => {
@@ -100,9 +98,9 @@ webSocketServer.on('connection', function (ws) {
                 });
             })
             .catch(error => {
-              console.log(`\nPromises failed in queriesObj.folder:\n\t${error}`);
+              console.log(`\nPromises failed in query.folder:\n\t${error}`);
             });
-        } else if (queriesObj.branch) {
+        } else if (query.branch) {
           Promise.all([getBranches(), getLogs(), getFilesTree()])
             .then(([branchesList, logs, filesList]) => {
               const result = getDataForBranches(branchesList, logs, filesList);
@@ -194,12 +192,18 @@ function parseQueries(message) {
 
 // ------------------------------
 
-function handleRequest(req, res) {
-  pageResponse = res;
-  const query = req.query;
+function clearContext() {
   globalData.file = '';
   globalData.filesTreeContext = {};
   globalData.gitContext = '';
+}
+
+// ------------------------------
+
+function handleRequest(req, res) {
+  pageResponse = res;
+  const query = req.query;
+  clearContext();
 
   if (Object.keys(req.query).length > 0) {
     if (query.branch && query.branch !== '') {
