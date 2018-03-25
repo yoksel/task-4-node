@@ -1,4 +1,4 @@
-sudo: false
+sudo: required
 language: node_js
 
 node_js:
@@ -15,7 +15,5 @@ script:
 services:
 - docker
 
-before_install:
-  - docker build -t myapp .
-  - docker run -d -p 3000:3000 -p 8081:8081 myapp
-  - docker ps -a
+after_success:
+  - sh .travis/deploy_dockerhub.sh
