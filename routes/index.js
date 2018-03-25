@@ -37,25 +37,25 @@ webSocketServer.on('connection', function (ws) {
   Promise.all(prepareTemplates())
     .then(response => {
       ws.on('message', function (message) {
-        const query = parseQueries(message);
+        const queriesObj = parseQueries(message);
         clearContext();
 
-        globalData.currentBranch = query.branch;
+        globalData.currentBranch = queriesObj.branch;
         globalData.gitContext = globalData.currentBranch;
 
-        if (query.folder) {
+        if (queriesObj.folder) {
           globalData.filesTreeContext.currentType = 'folder';
-          globalData.filesTreeContext.folder = query.folder;
+          globalData.filesTreeContext.folder = queriesObj.folder;
         }
 
-        if (query.commit && query.commit !== '') {
-          globalData.gitContext = query.commit;
-          globalData.commit = query.commit;
+        if (queriesObj.commit && queriesObj.commit !== '') {
+          globalData.gitContext = queriesObj.commit;
+          globalData.commit = queriesObj.commit;
         }
 
         // If file
-        if (query.file) {
-          getFileContentByHash(query)
+        if (queriesObj.file) {
+          getFileContentByHash(queriesObj)
             .then(file => {
               resultData = fillTemplate('file_viewer', {file: file});
               const result = {
@@ -69,12 +69,12 @@ webSocketServer.on('connection', function (ws) {
             .catch(error => {
               console.log(`\nError in getFileContentByHash():\n\t${error}`);
             });
-        } else if (query.folder) {
-          getHashFromUrl(query.folder)
+        } else if (queriesObj.folder) {
+          getHashFromUrl(queriesObj.folder)
             .then(hash => {
               globalData.filesTreeContext.currentHash = hash;
               globalData.filesTreeContext.currentType = 'folder';
-              globalData.filesTreeContext.folder = query.folder;
+              globalData.filesTreeContext.folder = queriesObj.folder;
 
               getFilesTree()
                 .then(filesList => {
@@ -98,9 +98,9 @@ webSocketServer.on('connection', function (ws) {
                 });
             })
             .catch(error => {
-              console.log(`\nPromises failed in query.folder:\n\t${error}`);
+              console.log(`\nPromises failed in queriesObj.folder:\n\t${error}`);
             });
-        } else if (query.branch) {
+        } else if (queriesObj.branch) {
           Promise.all([getBranches(), getLogs(), getFilesTree()])
             .then(([branchesList, logs, filesList]) => {
               const result = getDataForBranches(branchesList, logs, filesList);
@@ -351,7 +351,11 @@ function getLogs() {
 // ------------------------------
 
 function parseLogsData(logsSrc) {
-  let commitsList = logsSrc.split('\n');
+  let commitsList = [];
+
+  if (logsSrc) {
+    commitsList = logsSrc.split('\n');
+  }
 
   commitsList = commitsList.map(commit => {
     let commitClass = '';
@@ -391,7 +395,7 @@ function getFilesTree() {
     const treeContext = globalData.filesTreeContext;
 
     let currentFolder = '';
-    if(treeContext && treeContext.folder ) {
+    if (treeContext && treeContext.folder) {
       currentFolder = treeContext.folder;
     }
 
@@ -411,6 +415,7 @@ function getFilesTree() {
 
         const nav = getFilesNav(currentFolder);
         const blobsList = parseBlobsList(blobsListSrc, currentFolder);
+
         blobsList.sort(sortBlobsByType);
 
         resolve({
@@ -710,12 +715,17 @@ module.exports = {
   getHashFromUrl: getHashFromUrl,
   sendResult: sendResult,
   parseQueries: parseQueries,
+  clearContext: clearContext,
   execCommands: execCommands,
   execGitCmd: execGitCmd,
   getLogs: getLogs,
+  parseLogsData: parseLogsData,
   getFilesTree: getFilesTree,
+  getFilesNav: getFilesNav,
+  parseBlobsList: parseBlobsList,
   sortBlobsByType: sortBlobsByType,
   getBranches: getBranches,
+  parceBranchesData: parceBranchesData,
   getFileContentByHash: getFileContentByHash,
   prepareTemplates: prepareTemplates,
   fillTemplate: fillTemplate,
