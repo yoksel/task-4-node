@@ -2,3 +2,4 @@ node_modules
 public
 *.map
 hermione-html-reporter
+.nyc_output
