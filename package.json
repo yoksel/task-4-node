@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "gulp build && node app.js",
+    "start": "node app.js",
     "build": "gulp build",
     "dev": "gulp start",
     "lint": "eslint '**/*.js' && stylelint sources/**/*.scss",

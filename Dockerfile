@@ -2,7 +2,7 @@
 # docker build --no-cache -t myapp .
 
 # Run (3000 from config; 8081 for Websockets):
-# docker run -d -p 3000:3000 -p 8081:8081 myapp
+# docker run -d -p 3000:3000 -p 8081:8081 --rm -it myapp
 
 FROM node:slim
 
