@@ -43,6 +43,8 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-app.listen(config.port, () => console.log('Express app listening on localhost:3000'));
+app.listen(config.port, () => {
+  console.log('Express app listening on localhost:3000');
+});
 
 module.exports = app;

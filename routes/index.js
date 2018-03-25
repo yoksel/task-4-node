@@ -75,6 +75,8 @@ webSocketServer.on('connection', function (ws) {
           getHashFromUrl(queriesObj.folder)
             .then(hash => {
               globalData.filesTreeContext.currentHash = hash;
+              globalData.filesTreeContext.currentType = 'folder';
+              globalData.filesTreeContext.folder = queriesObj.folder;
 
               getFilesTree()
                 .then(filesList => {
@@ -94,7 +96,7 @@ webSocketServer.on('connection', function (ws) {
                   sendResult(result);
                 })
                 .catch(error => {
-                  console.log(`\nPromises failed in getFilesTree():\n\t${error}`);
+                  console.log(`\nPromises failed in socket in getFilesTree():\n\t${error}`);
                 });
             })
             .catch(error => {
@@ -246,6 +248,7 @@ function handleRequest(req, res) {
         getHashFromUrl(query.folder)
           .then(hash => {
             globalData.filesTreeContext.currentHash = hash;
+
             execCommands();
           })
           .catch(error => {
@@ -286,7 +289,7 @@ function execCommands() {
           renderPage();
         })
         .catch(error => {
-          console.log(`\nPromises failed in getFilesTree():\n\t${error}`);
+          console.log(`\nPromises failed in execCommands() in getFilesTree():\n\t${error}`);
           renderPage();
         });
     })
@@ -328,27 +331,8 @@ function getLogs() {
       command: `git log --pretty=format:"%h|%an|%ae|%ar|%s" ${globalData.currentBranch}`,
       cwd: dirPath
     })
-      .then(response => {
-        let commitsList = response.split('\n');
-        commitsList = commitsList.map(commit => {
-          let commitClass = '';
-          const [hash, author, email, time, title] = commit.split('|');
-
-          if (globalData.gitContext && hash.indexOf(globalData.gitContext) > -1) {
-            commitClass = 'current';
-          }
-          const result = {
-            hash: hash,
-            branch: globalData.currentBranch,
-            author: author,
-            email: email,
-            time: time,
-            title: title,
-            class: commitClass
-          };
-
-          return result;
-        });
+      .then(logsSrc => {
+        let commitsList = parseLogsData(logsSrc);
 
         resolve(commitsList);
       })
@@ -362,8 +346,37 @@ function getLogs() {
 
 // ------------------------------
 
+function parseLogsData(logsSrc) {
+  let commitsList = logsSrc.split('\n');
+
+  commitsList = commitsList.map(commit => {
+    let commitClass = '';
+    const [hash, author, email, time, title] = commit.split('|');
+
+    if (globalData.gitContext && hash.indexOf(globalData.gitContext) > -1) {
+      commitClass = 'current';
+    }
+    const result = {
+      hash: hash,
+      branch: globalData.currentBranch,
+      author: author,
+      email: email,
+      time: time,
+      title: title,
+      class: commitClass
+    };
+
+    return result;
+  });
+
+  return commitsList;
+}
+
+// ------------------------------
+
 function getFilesTree() {
   let context = 'HEAD';
+
   if (globalData.filesTreeContext.currentHash && globalData.filesTreeContext.currentHash !== '') {
     context = globalData.filesTreeContext.currentHash;
   } else if (globalData.gitContext && globalData.gitContext !== '') {
@@ -372,6 +385,12 @@ function getFilesTree() {
 
   const filesPromise = new Promise((resolve, reject) => {
     const treeContext = globalData.filesTreeContext;
+
+    let currentFolder = '';
+    if(treeContext && treeContext.folder ) {
+      currentFolder = treeContext.folder;
+    }
+
     const treePromise = execGitCmd({
       command: `git ls-tree --abbrev=${hashLength} ${context}`, // -r
       cwd: dirPath
@@ -386,82 +405,8 @@ function getFilesTree() {
             }
           });
 
-        const blobsList = [];
-        let nav = {};
-        const currentFolder = treeContext.folder;
-
-        if (currentFolder) {
-          const pathParts = currentFolder.split('/');
-          const navItems = pathParts.slice(pathParts.length - 2);
-          let parentType = 'branch';
-          let parentName = '..';
-
-          const parentUrlParts = [
-            `branch=${globalData.currentBranch}`
-          ];
-
-          if (pathParts.length > 1) {
-            parentName = navItems[0];
-            parentUrlParts.push(`folder=${navItems[0]}`);
-            parentType = 'folder';
-          }
-
-          if (globalData.commit) {
-            parentUrlParts.push(`commit=${globalData.commit}`);
-          }
-
-          nav.parent = {
-            name: parentName,
-            url: parentUrlParts.join('&'),
-            type: parentType
-          };
-
-          nav.current = {
-            name: navItems[navItems.length - 1],
-            hash: treeContext.hash,
-            type: 'folder'
-          };
-        }
-
-        blobsListSrc.forEach(blobDataSrc => {
-          if (blobDataSrc) {
-            let [blobData, blobPath] = blobDataSrc.split('\t');
-            const blobDataArr = blobData.split(' ');
-            const blobPathArr = blobPath.split('/');
-            let blobName = blobPathArr.splice(blobPathArr.length - 1, 1)[0];
-            let prefix = '—&nbsp;';
-            const blobHash = blobDataArr[2];
-            let blobType = blobDataArr[1];
-
-            if (currentFolder) {
-              blobPath = [currentFolder, blobPath].join('/');
-            }
-
-            if (blobType === 'blob') {
-              blobType = 'file';
-            } else if (blobType === 'tree' || blobType === 'commit') {
-              blobType = 'folder';
-              blobName += '/';
-            }
-
-            let urlParts = [
-              `${blobType}=${blobPath}`,
-              `branch=${globalData.currentBranch}`
-            ];
-
-            if (globalData.commit) {
-              urlParts.push(`commit=${globalData.commit}`);
-            }
-
-            blobsList.push({
-              type: blobType,
-              name: blobName,
-              prefix: prefix,
-              url: urlParts.join('&')
-            });
-          }
-        });
-
+        const nav = getFilesNav(currentFolder);
+        const blobsList = parseBlobsList(blobsListSrc, currentFolder);
         blobsList.sort(sortBlobsByType);
 
         resolve({
@@ -476,6 +421,95 @@ function getFilesTree() {
   });
 
   return filesPromise;
+}
+
+// ------------------------------
+
+function getFilesNav(currentFolder) {
+  const nav = {};
+  const treeContext = globalData.filesTreeContext;
+
+  if (currentFolder) {
+    const pathParts = currentFolder.split('/');
+    const navItems = pathParts.slice(pathParts.length - 2);
+    let parentType = 'branch';
+    let parentName = '..';
+
+    const parentUrlParts = [
+      `branch=${globalData.currentBranch}`
+    ];
+
+    if (pathParts.length > 1) {
+      parentName = navItems[0];
+      parentUrlParts.push(`folder=${navItems[0]}`);
+      parentType = 'folder';
+    }
+
+    if (globalData.commit) {
+      parentUrlParts.push(`commit=${globalData.commit}`);
+    }
+
+    nav.parent = {
+      name: parentName,
+      url: parentUrlParts.join('&'),
+      type: parentType
+    };
+
+    nav.current = {
+      name: navItems[navItems.length - 1],
+      hash: treeContext.hash,
+      type: 'folder'
+    };
+  }
+
+  return nav;
+}
+
+// ------------------------------
+
+function parseBlobsList(blobsListSrc, currentFolder) {
+  let blobsList = [];
+
+  blobsListSrc.forEach(blobDataSrc => {
+    if (blobDataSrc) {
+      let [blobData, blobPath] = blobDataSrc.split('\t');
+      const blobDataArr = blobData.split(' ');
+      const blobPathArr = blobPath.split('/');
+      let blobName = blobPathArr.splice(blobPathArr.length - 1, 1)[0];
+      let prefix = '—&nbsp;';
+      const blobHash = blobDataArr[2];
+      let blobType = blobDataArr[1];
+
+      if (currentFolder) {
+        blobPath = [currentFolder, blobPath].join('/');
+      }
+
+      if (blobType === 'blob') {
+        blobType = 'file';
+      } else if (blobType === 'tree' || blobType === 'commit') {
+        blobType = 'folder';
+        blobName += '/';
+      }
+
+      let urlParts = [
+        `${blobType}=${blobPath}`,
+        `branch=${globalData.currentBranch}`
+      ];
+
+      if (globalData.commit) {
+        urlParts.push(`commit=${globalData.commit}`);
+      }
+
+      blobsList.push({
+        type: blobType,
+        name: blobName,
+        prefix: prefix,
+        url: urlParts.join('&')
+      });
+    }
+  });
+
+  return blobsList;
 }
 
 // ------------------------------
@@ -496,46 +530,7 @@ function getBranches() {
       cwd: dirPath
     })
       .then(response => {
-        let dataList = response.split('\n').filter(item => {
-          if (item) {
-            return item;
-          }
-        });
-
-        dataList = dataList.map(dataItem => {
-          let currentBranchInTree = false;
-          if (dataItem.indexOf('*') > -1) {
-            currentBranchInTree = true;
-            dataItem = dataItem.split('*')[1];
-          }
-          let strParts = dataItem.split(' ');
-
-          strParts = strParts.filter(part => {
-            if (part) {
-              return part;
-            }
-          });
-
-          const [name, hash] = strParts;
-          let branchClass = '';
-
-          if (name === globalData.currentBranch) {
-            branchClass = 'current';
-          } else if (!globalData.currentBranch && currentBranchInTree) {
-            branchClass = 'current';
-            globalData.currentBranch = name;
-
-            if (!globalData.gitContext) {
-              globalData.gitContext = hash;
-            }
-          }
-
-          return {
-            name: name,
-            hash: hash,
-            class: branchClass
-          };
-        });
+        let dataList = parceBranchesData(response);
 
         resolve(dataList);
       })
@@ -546,6 +541,53 @@ function getBranches() {
   });
 
   return branchesPromis;
+}
+
+// ------------------------------
+
+function parceBranchesData(data) {
+  let dataList = data.split('\n').filter(item => {
+    if (item) {
+      return item;
+    }
+  });
+
+  dataList = dataList.map(dataItem => {
+    let currentBranchInTree = false;
+    if (dataItem.indexOf('*') > -1) {
+      currentBranchInTree = true;
+      dataItem = dataItem.split('*')[1];
+    }
+    let strParts = dataItem.split(' ');
+
+    strParts = strParts.filter(part => {
+      if (part) {
+        return part;
+      }
+    });
+
+    const [name, hash] = strParts;
+    let branchClass = '';
+
+    if (name === globalData.currentBranch) {
+      branchClass = 'current';
+    } else if (!globalData.currentBranch && currentBranchInTree) {
+      branchClass = 'current';
+      globalData.currentBranch = name;
+
+      if (!globalData.gitContext) {
+        globalData.gitContext = hash;
+      }
+    }
+
+    return {
+      name: name,
+      hash: hash,
+      class: branchClass
+    };
+  });
+
+  return dataList;
 }
 
 // ------------------------------
@@ -659,5 +701,19 @@ function renderPage() {
 // ------------------------------
 
 module.exports = {
-  index: handleRequest
+  index: handleRequest,
+  getDataForBranches: getDataForBranches,
+  getHashFromUrl: getHashFromUrl,
+  sendResult: sendResult,
+  parseQueries: parseQueries,
+  execCommands: execCommands,
+  execGitCmd: execGitCmd,
+  getLogs: getLogs,
+  getFilesTree: getFilesTree,
+  sortBlobsByType: sortBlobsByType,
+  getBranches: getBranches,
+  getFileContentByHash: getFileContentByHash,
+  prepareTemplates: prepareTemplates,
+  fillTemplate: fillTemplate,
+  renderPage: renderPage,
 };

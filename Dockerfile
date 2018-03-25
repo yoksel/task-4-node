@@ -25,6 +25,6 @@ WORKDIR /app
 
 RUN npm install --production
 
-EXPOSE 3000 8080 8081
+EXPOSE 3000 8081
 
 CMD npm start
