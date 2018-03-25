@@ -6,14 +6,15 @@ node_js:
  - 8
 
 install:
-- npm install
+ - npm install
 
 script:
  - npm run lint
  - travis_wait npm run test
 
 services:
-- docker
+ - docker
 
 after_success:
-  - sh .travis/deploy_dockerhub.sh
+ - sh .travis/deploy_dockerhub.sh
+ - test "$TRAVIS_BRANCH" = "master" && sh .travis/deploy_heroku.sh
