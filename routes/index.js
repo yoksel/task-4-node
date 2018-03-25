@@ -236,7 +236,7 @@ function handleRequest(req, res) {
             globalData.filesTreeContext.currentType = 'folder';
             globalData.filesTreeContext.folder = folder;
 
-            getHashFromUrl(query.folder)
+            getHashFromUrl(folder)
               .then(hash => {
                 globalData.filesTreeContext.currentHash = hash;
                 execCommands();
