@@ -51,7 +51,7 @@ gulp.task('start', ['build'], function () {
   return nodemon({
     script: 'app.js',
     ext: 'js html scss hbs',
-    ignore: ['public'],
+    ignore: ['public', 'hermiona'],
 
     tasks: function (changedFiles) {
       var tasks = [];
