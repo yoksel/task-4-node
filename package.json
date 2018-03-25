@@ -6,7 +6,8 @@
     "start": "gulp build && node app.js",
     "build": "gulp build",
     "dev": "gulp start",
-    "lint": "eslint '**/*.js' && stylelint sources/**/*.scss"
+    "lint": "eslint '**/*.js' && stylelint sources/**/*.scss",
+    "test": "mocha"
   },
   "dependencies": {
     "body-parser": "~1.18.2",
@@ -25,6 +26,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-minify": "^0.3.0",
     "browser-sync": "^2.23.6",
+    "chai": "^4.1.2",
     "eslint": "^4.19.1",
     "eslint-config-yandex": "^1.0.6",
     "gulp-babel": "^7.0.1",
@@ -35,6 +37,7 @@
     "gulp-postcss": "^7.0.1",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.1.0",
+    "mocha": "^5.0.5",
     "path": "^0.12.7",
     "run-sequence": "^2.2.1",
     "stylelint": "^9.1.3",

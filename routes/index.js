@@ -169,6 +169,7 @@ function getHashFromUrl(url) {
 
   return hashProm;
 }
+
 // ------------------------------
 
 function sendResult(result) {
@@ -400,21 +401,14 @@ function getFilesTree() {
     }
 
     const treePromise = execGitCmd({
-      command: `git ls-tree --abbrev=${hashLength} ${context}`, // -r
+      command: `git ls-tree --abbrev=${hashLength} ${context}`,
       cwd: dirPath
     });
 
     treePromise
-      .then(tree => {
-        const blobsListSrc = tree.split('\n')
-          .filter(item => {
-            if (item) {
-              return item;
-            }
-          });
-
+      .then(blobsDataSrc => {
         const nav = getFilesNav(currentFolder);
-        const blobsList = parseBlobsList(blobsListSrc, currentFolder);
+        const blobsList = parseBlobsList(blobsDataSrc, currentFolder);
 
         blobsList.sort(sortBlobsByType);
 
@@ -476,18 +470,25 @@ function getFilesNav(currentFolder) {
 
 // ------------------------------
 
-function parseBlobsList(blobsListSrc, currentFolder) {
+function parseBlobsList(blobsDataSrc, currentFolder) {
+  const blobsListSrc = blobsDataSrc.split('\n')
+    .filter(item => {
+      if (item) {
+        return item;
+      }
+    });
+
   let blobsList = [];
 
-  blobsListSrc.forEach(blobDataSrc => {
-    if (blobDataSrc) {
-      let [blobData, blobPath] = blobDataSrc.split('\t');
-      const blobDataArr = blobData.split(' ');
+  blobsListSrc.forEach(blobItemSrc => {
+    if (blobItemSrc) {
+      let [blobItem, blobPath] = blobItemSrc.split('\t');
+      const blobItemArr = blobItem.split(' ');
       const blobPathArr = blobPath.split('/');
       let blobName = blobPathArr.splice(blobPathArr.length - 1, 1)[0];
       let prefix = '—&nbsp;';
-      const blobHash = blobDataArr[2];
-      let blobType = blobDataArr[1];
+      const blobHash = blobItemArr[2];
+      let blobType = blobItemArr[1];
 
       if (currentFolder) {
         blobPath = [currentFolder, blobPath].join('/');
