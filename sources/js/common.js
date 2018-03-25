@@ -12,48 +12,69 @@ const filesLinkCurrentClass = 'files__link--current';
 // If connection works
 if (socket.readyState !== 3) {
 // Keep links always clickable
-  main.addEventListener('click', (event) => {
-    const target = event.target;
-    const isFile = target.classList.contains('files__link--file');
-    if (target.tagName !== 'A') {
-      return;
-    }
-    event.preventDefault();
-
-    if (isFile) {
-      if (currentElem) {
-        currentElem.classList.remove(filesLinkCurrentClass);
-      }
-
-      currentElem = target;
-      currentElem.classList.add(filesLinkCurrentClass);
-    }
-
-    let outgoingMessage = target.getAttribute('href').substr(1);
-    socket.send(outgoingMessage);
-  });
+  addLinksListener();
 }
+
+// ------------------------------
+
+function linkEvent(event) {
+  const target = event.target;
+  const isFile = target.classList.contains('files__link--file');
+  if (target.tagName !== 'A') {
+    return;
+  }
+  event.preventDefault();
+
+  if (isFile) {
+    if (currentElem) {
+      currentElem.classList.remove(filesLinkCurrentClass);
+    }
+
+    currentElem = target;
+    currentElem.classList.add(filesLinkCurrentClass);
+  }
+
+  let outgoingMessage = target.getAttribute('href').substr(1);
+  socket.send(outgoingMessage);
+}
+
+// ------------------------------
+
+function addLinksListener() {
+  main.addEventListener('click', linkEvent);
+}
+
+// ------------------------------
+
+function removeLinksListener() {
+  main.removeEventListener('click', linkEvent);
+}
+
+// ------------------------------
 
 socket.onopen = function () {
   messageText = 'Соединение установлено.';
   // console.log(messageText);
 };
 
+// ------------------------------
+
 socket.onclose = function (event) {
   if (event.wasClean) {
     messageText = 'Соединение закрыто чисто';
     // console.log(messageText);
-
   } else {
     messageText = 'Обрыв соединения'; // например, 'убит' процесс сервера
     // console.log(messageText);
-
   }
 
   let reason = event.reason ? `Причина: ${event.reason}.` : '';
-  messageText = `Соединение прервано.${reason} Страница будет обновлена.`;
-  console.log(messageText);
+  messageText = `Соединение прервано.${reason}.`;
+  removeLinksListener();
+  // console.log(messageText);
 };
+
+// ------------------------------
 
 socket.onmessage = function (event) {
   const response = JSON.parse(event.data);
@@ -73,6 +94,9 @@ socket.onmessage = function (event) {
   }
 };
 
+// ------------------------------
+
 socket.onerror = function (error) {
-  console.log('Ошибка ' + error.message);
+  removeLinksListener();
+  // console.log('Ошибка ' + error.message);
 };
