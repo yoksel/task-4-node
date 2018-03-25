@@ -22,4 +22,11 @@
   &--folder {
     font-weight: bold;
   }
+
+  &--current {
+    font-weight: bold;
+    text-decoration: none;
+    color: #000;
+    cursor: default;
+  }
 }

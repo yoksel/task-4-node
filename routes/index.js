@@ -66,21 +66,14 @@ webSocketServer.on('connection', function (ws) {
               };
               let key = null;
 
-              for (key in clients) {
-                clients[key].send(JSON.stringify(result));
-              }
+              sendResult(result);
             })
             .catch(error => {
               console.log(`\nError in getFileContentByHash():\n\t${error}`);
             });
         } else if (queriesObj.folder) {
-          execGitCmd({
-            command: `git ls-tree --abbrev=${hashLength} ${globalData.gitContext} ${queriesObj.folder}`,
-            cwd: dirPath
-          })
-            .then(treeSrc => {
-              const dataSrc = treeSrc.split('\t');
-              const hash = dataSrc[0].split(' ')[2];
+          getHashFromUrl(queriesObj.folder)
+            .then(hash => {
               globalData.filesTreeContext.currentHash = hash;
 
               getFilesTree()
@@ -98,9 +91,7 @@ webSocketServer.on('connection', function (ws) {
                     }
                   };
 
-                  for (key in clients) {
-                    clients[key].send(JSON.stringify(result));
-                  }
+                  sendResult(result);
                 })
                 .catch(error => {
                   console.log(`\nPromises failed in getFilesTree():\n\t${error}`);
@@ -112,30 +103,9 @@ webSocketServer.on('connection', function (ws) {
         } else if (queriesObj.branch) {
           Promise.all([getBranches(), getLogs(), getFilesTree()])
             .then(([branchesList, logs, filesList]) => {
-              branchesList.forEach(branch => {
-                if (branch.class) {
-                  branch.logs = logs;
-                }
-              });
-              const branches = fillTemplate('branches', {branches: branchesList});
-              let key;
+              const result = getDataForBranches(branchesList, logs, filesList);
 
-              const files = fillTemplate('files', {
-                filesNav: filesList.nav,
-                files: filesList.list
-              });
-
-              const result = {
-                command: 'branch',
-                data: {
-                  branches: branches,
-                  files: files
-                }
-              };
-
-              for (key in clients) {
-                clients[key].send(JSON.stringify(result));
-              }
+              sendResult(result);
             })
             .catch(error => {
               console.log(`\nPromises failed in get branches data:\n\t${error}`);
@@ -149,6 +119,63 @@ webSocketServer.on('connection', function (ws) {
     delete clients[id];
   });
 });
+
+// ------------------------------
+
+function getDataForBranches(branchesList, logs, filesList) {
+  branchesList.forEach(branch => {
+    if (branch.class) {
+      branch.logs = logs;
+    }
+  });
+  const branches = fillTemplate('branches', {branches: branchesList});
+  let key;
+
+  const files = fillTemplate('files', {
+    filesNav: filesList.nav,
+    files: filesList.list
+  });
+
+  const result = {
+    command: 'branch',
+    data: {
+      branches: branches,
+      files: files
+    }
+  };
+
+  return result;
+}
+
+// ------------------------------
+
+function getHashFromUrl(url) {
+  const hashProm = new Promise((resolve, request) => {
+    execGitCmd({
+      command: `git ls-tree --abbrev=${hashLength} ${globalData.gitContext} ${url}`,
+      cwd: dirPath
+    })
+      .then(urlSrc => {
+        const dataSrc = urlSrc.split('\t');
+        const hash = dataSrc[0].split(' ')[2];
+
+        resolve(hash);
+      })
+      .catch(error => {
+        console.log(`\nPromises failed in getHashFromUrl():\n\t${error}`);
+        reject(error);
+      });
+  });
+
+  return hashProm;
+}
+// ------------------------------
+
+function sendResult(result) {
+  for (key in clients) {
+    clients[key].send(JSON.stringify(result));
+  }
+}
 
 // ------------------------------
 
@@ -202,18 +229,13 @@ function handleRequest(req, res) {
             globalData.filesTreeContext.currentType = 'folder';
             globalData.filesTreeContext.folder = folder;
 
-            execGitCmd({
-              command: `git ls-tree --abbrev=${hashLength} ${globalData.gitContext} ${folder}`,
-              cwd: dirPath
-            })
-              .then(treeSrc => {
-                const dataSrc = treeSrc.split('\t');
-                const hash = dataSrc[0].split(' ')[2];
+            getHashFromUrl(query.folder)
+              .then(hash => {
                 globalData.filesTreeContext.currentHash = hash;
                 execCommands();
               })
               .catch(error => {
-                console.log(`\nPromises failed in execGitCmd() with ls-tree:\n\t${error}`);
+                console.log(`\nPromises failed in getHashFromUrl():\n\t${error}`);
                 execCommands();
               });
           })
@@ -221,18 +243,13 @@ function handleRequest(req, res) {
             console.log(`\nPromises failed in getFileContentByHash():\n\t${error}`);
           });
       } else if (query.folder && query.folder !== '') {
-        execGitCmd({
-          command: `git ls-tree --abbrev=${hashLength} ${globalData.gitContext} ${query.folder}`,
-          cwd: dirPath
-        })
-          .then(response => {
-            const dataSrc = response.split('\t');
-            const hash = dataSrc[0].split(' ')[2];
+        getHashFromUrl(query.folder)
+          .then(hash => {
             globalData.filesTreeContext.currentHash = hash;
             execCommands();
           })
           .catch(error => {
-            console.log(`\nPromises failed in handleRequest():\n\t${error}`);
+            console.log(`\nPromises failed in getHashFromUrl():\n\t${error}`);
             execCommands();
           });
       } else {
@@ -641,4 +658,6 @@ function renderPage() {
 
 // ------------------------------
 
-module.exports.index = handleRequest;
+module.exports = {
+  index: handleRequest
+};

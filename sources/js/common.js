@@ -6,16 +6,29 @@ const fileViewerParent = document.querySelector('.columns__item--file-viewer');
 const logsParent = document.querySelector('.logs__content');
 const branchesParent = document.querySelector('.columns__item--branches');
 const filesParent = document.querySelector('.columns__item--files');
+let currentElem;
+const filesLinkCurrentClass = 'files__link--current';
 
 // If connection works
 if (socket.readyState !== 3) {
 // Keep links always clickable
   main.addEventListener('click', (event) => {
     const target = event.target;
+    const isFile = target.classList.contains('files__link--file');
     if (target.tagName !== 'A') {
       return;
     }
     event.preventDefault();
+
+    if (isFile) {
+      if (currentElem) {
+        currentElem.classList.remove(filesLinkCurrentClass);
+      }
+
+      currentElem = target;
+      currentElem.classList.add(filesLinkCurrentClass);
+    }
+
     let outgoingMessage = target.getAttribute('href').substr(1);
     socket.send(outgoingMessage);
   });
