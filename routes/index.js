@@ -197,6 +197,8 @@ function clearContext() {
   globalData.file = '';
   globalData.filesTreeContext = {};
   globalData.gitContext = '';
+  globalData.currentBranch = '';
+  globalData.commit = '';
 }
 
 // ------------------------------
@@ -362,7 +364,7 @@ function parseLogsData(logsSrc) {
     let commitClass = '';
     const [hash, author, email, time, title] = commit.split('|');
 
-    if (globalData.gitContext && hash.indexOf(globalData.gitContext) > -1) {
+    if (globalData.gitContext && hash.indexOf(globalData.gitContext) > -1 && globalData.commit) {
       commitClass = 'current';
     }
     const result = {
@@ -569,7 +571,6 @@ function parceBranchesData(data) {
       dataItem = dataItem.split('*')[1];
     }
     let strParts = dataItem.split(' ');
-
     strParts = strParts.filter(part => {
       if (part) {
         return part;
