@@ -6,4 +6,6 @@
 
 Сборка: `npm run build`
 
+Тесты: `npm test`
+
 Параметры запуска задаются в config.js.
