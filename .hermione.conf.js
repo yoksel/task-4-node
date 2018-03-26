@@ -10,6 +10,14 @@ module.exports = {
         debug: true,
         workers: 5,
       }
+    },
+    firefox: {
+      desiredCapabilities: {
+        browserName: 'firefox',
+        waitTimeout: 10000,
+        debug: true,
+        workers: 5,
+      }
     }
   },
   plugins: {
