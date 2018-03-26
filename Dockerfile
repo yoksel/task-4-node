@@ -1,8 +1,8 @@
 # Build:
-# docker build --no-cache -t myapp .
+# docker build --no-cache -t task-4-node .
 
 # Run (3000 from config; 8081 for Websockets):
-# docker run -d -p 3000:3000 -p 8081:8081 --rm -it myapp
+# docker run -d -p 3000:3000 -p 8081:8081 --net="host" --rm -it task-4-node
 
 FROM node:8
 
