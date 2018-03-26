@@ -33,6 +33,7 @@ var webSocketServer = new WebSocketServer.Server({
 webSocketServer.on('connection', function (ws) {
   var id = Math.random();
   clients[id] = ws;
+  console.log('\nConnection open ' + id);
 
   Promise.all(prepareTemplates())
     .then(response => {

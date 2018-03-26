@@ -4,15 +4,16 @@
 # Run (3000 from config; 8081 for Websockets):
 # docker run -d -p 3000:3000 -p 8081:8081 --rm -it myapp
 
-FROM node:slim
+FROM node:8
+
+ENV PORT=3000
+ENV PORT2=8081
 
 RUN mkdir /app
 
 WORKDIR /app
 
 COPY . /app
-
-RUN apt-get -y update && apt-get -y install --no-install-recommends git
 
 RUN git clone https://github.com/yoksel/test-git.git test-git
 
@@ -25,6 +26,6 @@ WORKDIR /app
 
 RUN npm install --production
 
-EXPOSE 3000 8081
+EXPOSE $PORT $PORT2
 
 CMD npm start
