@@ -3,18 +3,18 @@ sudo: required
 language: node_js
 
 node_js:
-- node
-- 8
+  - node
+  - 8
 
 install:
-- npm install
+  - npm install
 
 script:
-- npm run lint
-- travis_wait npm run test
+  - npm run lint
+  - travis_wait npm run test
 
 services:
-- docker
+  - docker
 
 aliases:
   deploy: &deploy
@@ -32,6 +32,5 @@ jobs:
         - npm run build
       deploy:
         <<: *deploy
-        provider: heroku
         app: task-4-node
 
