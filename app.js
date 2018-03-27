@@ -40,7 +40,7 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-app.listen(config.port, () => {
+app.listen(process.env.PORT || config.port, () => {
   console.log('Express app listening on localhost:3000');
 });
 

@@ -6,9 +6,6 @@
 
 FROM node:8
 
-ENV PORT=3000
-ENV PORT2=8081
-
 RUN mkdir /app
 
 WORKDIR /app
@@ -26,6 +23,6 @@ WORKDIR /app
 
 RUN npm install --production
 
-EXPOSE $PORT $PORT2
+EXPOSE 3000 8081
 
 CMD npm start
