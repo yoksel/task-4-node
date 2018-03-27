@@ -98,20 +98,21 @@
 
 ## Travis
 
-* Команды для деплоя в travis.yml
+__Команды для деплоя в travis.yml:__
   [Heroku Deployment](https://docs.travis-ci.com/user/deployment/heroku/)
 
-* Последовательный запуск нескольких команд
+__Последовательный запуск нескольких команд:__
   [Build Stages](https://docs.travis-ci.com/user/build-stages/)
 
-* Пример конфига для деплоя на хероку
+__Пример конфига для деплоя на хероку:__
   [Build Stages: Deploying to Heroku](https://docs.travis-ci.com/user/build-stages/deploy-heroku/)
 
-* Условия для запуска команд
+__Условия для запуска команд:__
   https://docs.travis-ci.com/user/conditional-builds-stages-jobs/
 
-* Переиспользование кусков кода
+__Переиспользование кусков кода:__
   [Build Stages: Defining steps using YAML aliases](https://docs.travis-ci.com/user/build-stages/using-yaml-aliases/)
+
 ---
 
 [How to Run Dockerized Apps on Heroku… and it’s pretty sweet](https://medium.com/travis-on-docker/how-to-run-dockerized-apps-on-heroku-and-its-pretty-great-76e07e610e22)
