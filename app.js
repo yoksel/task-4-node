@@ -9,6 +9,8 @@ var config = require('./config.js');
 var index = require('./routes/routes');
 var app = express();
 
+const port = process.env.PORT || config.port;
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 hbs.registerPartials(__dirname + '/views/partials');
@@ -40,8 +42,8 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-app.listen(process.env.PORT || config.port, () => {
-  console.log('Express app listening on localhost:3000');
+app.listen(port, () => {
+  console.log(`Express app listening on localhost: ${port}`);
 });
 
 module.exports = app;

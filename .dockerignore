@@ -1,2 +1,5 @@
 node_modules
+hermione*
+.nyc_output
 sources
+Dockerfile
