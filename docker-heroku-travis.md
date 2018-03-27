@@ -1,14 +1,16 @@
-# Docker
+#  Docker, Heroku, Travis
 
-1. Создать образ по докерфайлу:
+## Docker
 
-  `docker build -t <имя образа> .`
+### 1. Создать образ по докерфайлу:
+
+  ```docker build -t <имя образа> .```
 
   `-t` — флаг для задания имени образа
 
-2. Запустить образ в контейнере:
+### 2. Запустить образ в контейнере:
 
-  `docker run -d -p 3000:3000 --rm <имя образа>`
+  ```docker run -d -p 3000:3000 --rm <имя образа>```
 
   `-d` — запуск в фоновом режиме. В консоли выведется хеш, после этого можно открыть проект в браузере
 
@@ -22,31 +24,35 @@
 
 На этой стадии в браузере должно открываться работающее приложение, запущенное из локального контейнера.
 
-Посмотреть информацию о текущем контейнере:
+### Полезные команды:
 
-`docker ps`
+  Посмотреть информацию о текущем контейнере:
 
-Остановить контейнер:
+  ```docker ps```
 
-`docker container stop <id контейнера из предыдущей команды>`
+  Остановить контейнер:
 
-Посмотреть все контейнеры:
+  ```docker container stop <id контейнера из предыдущей команды>```
 
-`docker container ls -a`
+  Посмотреть все контейнеры:
 
-При запуске контейнера с флагом `--rm` и последующей остановке, остановленного контейнера в этом списке не будет.
+  ```docker container ls -a```
 
-Удалить образ:
+  При запуске контейнера с флагом `--rm` и последующей остановке, остановленного контейнера в этом списке не будет.
 
-`docker image rm <имя образа>`
+  Удалить образ:
 
-При запуске `docker build` с тем же именем образ перезаписывается.
+  ```docker image rm <имя образа>```
 
-# Heroku
+  При запуске `docker build` с тем же именем образ перезаписывается.
 
-1. На хероку создать pipeline и подключить в него репозиторий с приложением. При подключении разрешить автоматическое создание ревью при коммитах в пулреквест.
+## Heroku
 
-2. Установить инструменты хероку:
+### 1. На хероку создать pipeline и подключить в него репозиторий с приложением.
+
+  При подключении разрешить автоматическое создание ревью при коммитах в пулреквест.
+
+### 2. Установить инструменты хероку:
 
   ```
   npm install -g heroku-cli
@@ -57,31 +63,31 @@
 
   Залогиниться в хероку:
 
-  `heroku container:login`
+  ```heroku container:login```
 
-3. В папке с приложением запустить:
+### 3. В папке с приложением запустить:
 
-  `heroku create`
+  ```heroku create```
 
   Затем нужно проверить докер-образ на хероку.
 
-  1. Создаём образ:
+####   1. Создаём образ:
 
-    `docker build -t <имя образа> .`
+  ```docker build -t <имя образа> .```
 
-  2. Пушим образ в хероку:
+####  2. Пушим образ в хероку:
 
-    `heroku container:push web --app task-4-node`
+  ```heroku container:push web --app task-4-node```
 
   После этого приложение появится в дашборде хероку в колонке STAGING.
 
   Открыть браузере:
 
-  `heroku open --app <имя образа>`
+  ```heroku open --app <имя образа>```
 
   Посмотреть логи:
 
-  `heroku logs --app  <имя образа>`
+  ```heroku logs --app  <имя образа>```
 
 Таким образом можно убедиться, что созданный образ запускается локально и на хероку.
 
@@ -89,12 +95,12 @@
 
 [How to Run Dockerized Apps on Heroku… and it’s pretty sweet](https://medium.com/travis-on-docker/how-to-run-dockerized-apps-on-heroku-and-its-pretty-great-76e07e610e22)
 
-**Heroku**
+#### Heroku
 [Heroku Logging](https://devcenter.heroku.com/articles/logging)
 [Container Registry & Runtime (Docker Deploys)](https://devcenter.heroku.com/articles/container-registry-and-runtime)
 [Using Docker in Builds](https://docs.travis-ci.com/user/docker/)
 
-**Travis**
+#### Travis
 [Build Stages](https://docs.travis-ci.com/user/build-stages/)
 [Build Stages: Defining steps using YAML aliases](https://docs.travis-ci.com/user/build-stages/using-yaml-aliases/)
 [Heroku Deployment](https://docs.travis-ci.com/user/deployment/heroku/)
