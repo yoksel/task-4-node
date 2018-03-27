@@ -26,15 +26,6 @@ aliases:
 
 jobs:
   include:
-    - stage: deploy to review
-      script:
-        - npm run build
-      deploy:
-        <<: *deploy
-        app: task-4-node
-        on:
-          all_branches: true
-
     - stage: deploy to staging
       script:
         - npm run build
