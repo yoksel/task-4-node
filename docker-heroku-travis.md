@@ -77,7 +77,7 @@
 
 ####  2. Пушим образ в хероку:
 
-  ```heroku container:push web --app task-4-node```
+  ```heroku container:push web --app <имя образа>```
 
   После этого приложение появится в дашборде хероку в колонке STAGING.
 
