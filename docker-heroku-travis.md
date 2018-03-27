@@ -104,20 +104,20 @@
 
 ## Travis
 
-__Команды для деплоя в travis.yml:__<br>
-  [Heroku Deployment](https://docs.travis-ci.com/user/deployment/heroku/)
+Команды для деплоя в travis.yml:<br>
+[Heroku Deployment](https://docs.travis-ci.com/user/deployment/heroku/)
 
-__Последовательный запуск нескольких команд:__<br>
-  [Build Stages](https://docs.travis-ci.com/user/build-stages/)
+Последовательный запуск нескольких команд:<br>
+[Build Stages](https://docs.travis-ci.com/user/build-stages/)
 
-__Пример конфига для деплоя на хероку:__<br>
-  [Build Stages: Deploying to Heroku](https://docs.travis-ci.com/user/build-stages/deploy-heroku/)
+Пример конфига для деплоя на хероку:<br>
+[Build Stages: Deploying to Heroku](https://docs.travis-ci.com/user/build-stages/deploy-heroku/)
 
-__Условия для запуска команд:__<br>
-  [Conditional Builds, Stages, and Jobs](https://docs.travis-ci.com/user/conditional-builds-stages-jobs/)
+Условия для запуска команд:<br>
+[Conditional Builds, Stages, and Jobs](https://docs.travis-ci.com/user/conditional-builds-stages-jobs/)
 
-__Переиспользование кусков кода:__<br>
-  [Build Stages: Defining steps using YAML aliases](https://docs.travis-ci.com/user/build-stages/using-yaml-aliases/)
+Переиспользование кусков кода:<br>
+[Build Stages: Defining steps using YAML aliases](https://docs.travis-ci.com/user/build-stages/using-yaml-aliases/)
 
 ---
 
