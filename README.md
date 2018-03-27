@@ -2,11 +2,10 @@
 
 # Запуск приложения
 
-Запуск: `npm start`
+1. Сборка: `npm run build`
+2. Запуск: `npm start`
 
 Запуск с вотчером: `npm run dev`
-
-Сборка: `npm run build`
 
 Параметры запуска задаются в config.js.
 
