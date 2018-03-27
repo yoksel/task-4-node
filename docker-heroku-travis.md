@@ -92,16 +92,26 @@
 
 Таким образом можно убедиться, что созданный образ запускается локально и на хероку.
 
----
-
-[How to Run Dockerized Apps on Heroku… and it’s pretty sweet](https://medium.com/travis-on-docker/how-to-run-dockerized-apps-on-heroku-and-its-pretty-great-76e07e610e22)
-
-#### Heroku
 [Heroku Logging](https://devcenter.heroku.com/articles/logging)
 [Container Registry & Runtime (Docker Deploys)](https://devcenter.heroku.com/articles/container-registry-and-runtime)
 [Using Docker in Builds](https://docs.travis-ci.com/user/docker/)
 
-#### Travis
-[Build Stages](https://docs.travis-ci.com/user/build-stages/)
-[Build Stages: Defining steps using YAML aliases](https://docs.travis-ci.com/user/build-stages/using-yaml-aliases/)
-[Heroku Deployment](https://docs.travis-ci.com/user/deployment/heroku/)
+## Travis
+
+* Команды для деплоя в travis.yml
+  [Heroku Deployment](https://docs.travis-ci.com/user/deployment/heroku/)
+
+* Последовательный запуск нескольких команд
+  [Build Stages](https://docs.travis-ci.com/user/build-stages/)
+
+* Пример конфига для деплоя на хероку
+  [Build Stages: Deploying to Heroku](https://docs.travis-ci.com/user/build-stages/deploy-heroku/)
+
+* Условия для запуска команд
+  https://docs.travis-ci.com/user/conditional-builds-stages-jobs/
+
+* Переиспользование кусков кода
+  [Build Stages: Defining steps using YAML aliases](https://docs.travis-ci.com/user/build-stages/using-yaml-aliases/)
+---
+
+[How to Run Dockerized Apps on Heroku… and it’s pretty sweet](https://medium.com/travis-on-docker/how-to-run-dockerized-apps-on-heroku-and-its-pretty-great-76e07e610e22)
