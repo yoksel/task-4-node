@@ -36,7 +36,7 @@ jobs:
           all_branches: true
 
     - stage: deploy to staging
-      if: branch = master
+      if: branch is master
       script:
         - npm run build
       deploy:
@@ -44,8 +44,7 @@ jobs:
         app: task-4-node-stage
 
     - stage: deploy to prod
-      if: branch = master
-      if: tag = prod
+      if: branch is master and tag is prod
       script:
         - npm run build
       deploy:
