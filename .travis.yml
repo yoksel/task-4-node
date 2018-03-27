@@ -17,21 +17,19 @@ script:
 services:
   - docker
 
-aliases:
-  deploy: &deploy
-    provider: heroku
-    api_key:
-      secure: gBpZ07Q4xezPcj41b5cmB2FNfEwld9BAbzU0r/KzgfwEnMgzdlSSCKF/UvemzZZsUB7OCc1lkz3G+Y6rc+F4pCxbLtdvMqSCjtk0rlk5/dCMGVmG3S78x3Z3TPRlxCO1WUqQKy1O8/uOjxJ/7/83fKMfsp0oZN0yZ+gwnu9xpdu5kE0J/8C13lyOeO+iXjRT8DT0STU8/V02d5d+kysPkjMad0tf45mHI09naJ7gxG+eZW9k3/+iAendXwKCRvMK3ZqiK08OdWU/mZrRStGpvrdhmAomqAo37GNh6j9ozMm3wss/8vE4SCQmZOZhNnzbi4H3GvZVIh90HDjlz5vL8iIGx+apcR0JoQQT14FTBS/isu1Nwx883R8FMZI2CUfLD1f+BzRdZJN5UBYSdwFfkUWyx2THcMbOTLwFQTkdyWHGjriSlaIaFrqEPuxjm+1TMMEAFU8Ld6WrGM/riDLlW5mMCm5Qd6P9ic2f7RqHu4SpOPpcZsWGIkTKej8ttWHiUwmtFYZysqVKE/x8vRa9W1tIkTrnZPvzoQI85llIdJD/bJmAnuIyo6RLU8n5yBQ3D/3OrcUXWpfofWqzeqw2GQChr4GEGKNHv4g/OltjOH0cBbYGiXLPLVYn7QgoMCzZNnIHKOX2q98fHwIv+aVgNn++pzrqXAbDQmjWq8yMoy8=
-    skip_cleanup: true
-
 # Запуск задач для деплоя
 jobs:
   include:
     # Набор команд для параллельного запуска
     - stage: deploy to staging
+      before_deploy:
+        - npm run build
       script:
         - npm run build
       deploy:
-        <<: *deploy
+        provider: heroku
+        api_key:
+          secure: gBpZ07Q4xezPcj41b5cmB2FNfEwld9BAbzU0r/KzgfwEnMgzdlSSCKF/UvemzZZsUB7OCc1lkz3G+Y6rc+F4pCxbLtdvMqSCjtk0rlk5/dCMGVmG3S78x3Z3TPRlxCO1WUqQKy1O8/uOjxJ/7/83fKMfsp0oZN0yZ+gwnu9xpdu5kE0J/8C13lyOeO+iXjRT8DT0STU8/V02d5d+kysPkjMad0tf45mHI09naJ7gxG+eZW9k3/+iAendXwKCRvMK3ZqiK08OdWU/mZrRStGpvrdhmAomqAo37GNh6j9ozMm3wss/8vE4SCQmZOZhNnzbi4H3GvZVIh90HDjlz5vL8iIGx+apcR0JoQQT14FTBS/isu1Nwx883R8FMZI2CUfLD1f+BzRdZJN5UBYSdwFfkUWyx2THcMbOTLwFQTkdyWHGjriSlaIaFrqEPuxjm+1TMMEAFU8Ld6WrGM/riDLlW5mMCm5Qd6P9ic2f7RqHu4SpOPpcZsWGIkTKej8ttWHiUwmtFYZysqVKE/x8vRa9W1tIkTrnZPvzoQI85llIdJD/bJmAnuIyo6RLU8n5yBQ3D/3OrcUXWpfofWqzeqw2GQChr4GEGKNHv4g/OltjOH0cBbYGiXLPLVYn7QgoMCzZNnIHKOX2q98fHwIv+aVgNn++pzrqXAbDQmjWq8yMoy8=
+        skip_cleanup: true
         app: task-4-node
 
