@@ -25,6 +25,5 @@ EXPOSE 3000 8081
 
 RUN npm i --production
 RUN ls
-RUN cd public && ls
 
 CMD npm start
