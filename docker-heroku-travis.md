@@ -4,7 +4,9 @@
 
 ### 1. Создать образ по докерфайлу:
 
-  ```docker build -t <имя образа> .```
+  ```
+  docker build -t <имя образа> .
+  ```
 
   `-t` — флаг для задания имени образа
 
@@ -54,10 +56,8 @@
 
 ### 2. Установить инструменты хероку:
 
-  ```
-  npm install -g heroku-cli
-  heroku plugins:install heroku-container-registry
-  ```
+  ```npm install -g heroku-cli
+  heroku plugins:install heroku-container-registry```
 
   Подробнее: https://devcenter.heroku.com/articles/heroku-cli
 
