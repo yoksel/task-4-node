@@ -1,8 +1,5 @@
 {
   "name": "task-4-node",
-  "scripts": {
-    "postdeploy": "npm run test"
-  },
   "formation": {
     "web": {
       "quantity": 1

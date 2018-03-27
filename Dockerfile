@@ -1,13 +1,10 @@
 # Build:
-# docker build --no-cache -t myapp .
+# docker build --no-cache -t task-4-node .
 
 # Run (3000 from config; 8081 for Websockets):
-# docker run -d -p 3000:3000 -p 8081:8081 --rm -it myapp
+# docker run -d -p 3000:3000 -p 8081:8081 --net="host" --rm -it task-4-node
 
 FROM node:8
-
-ENV PORT=3000
-ENV PORT2=8081
 
 RUN mkdir /app
 
@@ -24,8 +21,10 @@ RUN for branch in $(git branch --all | grep '^\s*remotes' | egrep --invert-match
 
 WORKDIR /app
 
-RUN npm install --production
+EXPOSE 3000 8081
 
-EXPOSE $PORT $PORT2
+RUN npm i --production
+RUN ls
+RUN cd public && ls
 
 CMD npm start
