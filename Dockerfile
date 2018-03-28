@@ -6,11 +6,24 @@
 
 FROM node:8
 
+# For production sets to --production
+# & npm i install only production packages
+ENV PROD_FLAG=" "
+# Runs build pull requests, for production is empty
+ENV PR_BUILD="npm run build"
+
 RUN mkdir /app
 
 WORKDIR /app
 
 COPY . /app
+
+RUN ls
+
+RUN npm i $PROD_FLAG
+RUN $PR_BUILD
+
+RUN ls
 
 RUN git clone https://github.com/yoksel/test-git.git test-git
 
@@ -21,9 +34,8 @@ RUN for branch in $(git branch --all | grep '^\s*remotes' | egrep --invert-match
 
 WORKDIR /app
 
-EXPOSE 3000 8081
 
-RUN npm i --production
-RUN ls
+
+EXPOSE 3000 8081
 
 CMD npm start
