@@ -12,12 +12,12 @@ RUN mkdir /app
 
 WORKDIR /app
 
+COPY . /app
+
 RUN npm i $TESTVAR
 RUN $TESTVAR2
 RUN echo "Test var: $TESTVAR"
 RUN ls
-
-COPY . /app
 
 RUN git clone https://github.com/yoksel/test-git.git test-git
 
