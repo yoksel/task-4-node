@@ -5,8 +5,12 @@
 # docker run -d -p 3000:3000 -p 8081:8081 --net="host" --rm task-4-node
 
 FROM node:8
-ENV TESTVAR=" "
-ENV TESTVAR2="npm run build"
+
+# For production sets to --production
+# & npm i install only production packages
+ENV PRODFLAG=" "
+# Runs build pull requests, for production is empty
+ENV PRBUILD="npm run build"
 
 RUN mkdir /app
 
@@ -14,9 +18,12 @@ WORKDIR /app
 
 COPY . /app
 
+RUN ls
+
 RUN npm i $TESTVAR
-RUN $TESTVAR2
+RUN $PRBUILD
 RUN echo "Test var: $TESTVAR"
+
 RUN ls
 
 RUN git clone https://github.com/yoksel/test-git.git test-git

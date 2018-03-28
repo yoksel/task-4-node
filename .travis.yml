@@ -12,7 +12,6 @@ install:
 script:
   - npm run lint
   - npm run test
-  - npm run build
 
 services:
   - docker
@@ -29,8 +28,8 @@ jobs:
     - stage: deploy to staging
       if: tag IS blank
       env:
-        - TESTVAR='--production'
-        - TESTVAR2=''
+        - PRODFLAG='--production'
+        - PRBUILD=''
       script:
         - npm run build
       deploy:
