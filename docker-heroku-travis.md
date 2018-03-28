@@ -4,9 +4,7 @@
 
 ### 1. Создать образ по докерфайлу:
 
-  ```
-  docker build -t <имя образа> .
-  ```
+  ```docker build -t <имя образа> .```
 
   `-t` — флаг для задания имени образа
 
@@ -103,6 +101,10 @@
 [Using Docker in Builds](https://docs.travis-ci.com/user/docker/)
 
 ## Travis
+
+__Полезное:__<br>
+Параметр ```skip_cleanup: true``` говорит тревису не удалять то, что получилось после ```npm run build```.<br>
+[Deployment: Uploading Files and skip_cleanup](https://docs.travis-ci.com/user/deployment#Uploading-Files-and-skip_cleanup)
 
 Команды для деплоя в travis.yml:<br>
 [Heroku Deployment](https://docs.travis-ci.com/user/deployment/heroku/)
