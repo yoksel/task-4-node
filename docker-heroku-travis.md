@@ -103,7 +103,7 @@
 ## Travis
 
 __Полезное:__<br>
-Параметр ```skip_cleanup: true``` говорит тревису не удалять то, что получилось после ```npm run build```.
+Параметр ```skip_cleanup: true``` говорит тревису не удалять то, что получилось после ```npm run build```.<br>
 [Deployment: Uploading Files and skip_cleanup](https://docs.travis-ci.com/user/deployment#Uploading-Files-and-skip_cleanup)
 
 Команды для деплоя в travis.yml:<br>
