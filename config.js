@@ -1,5 +1,5 @@
 module.exports = {
   'path': 'test-git',
-  'host': 'localhost',
+  'host': '0.0.0.0',
   'port': '3000'
 };
