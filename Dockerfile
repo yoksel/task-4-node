@@ -8,9 +8,9 @@ FROM node:8
 
 # For production sets to --production
 # & npm i install only production packages
-ENV PRODFLAG=" "
+ENV PROD_FLAG=" "
 # Runs build pull requests, for production is empty
-ENV PRBUILD="npm run build"
+ENV PR_BUILD="npm run build"
 
 RUN mkdir /app
 
@@ -20,9 +20,8 @@ COPY . /app
 
 RUN ls
 
-RUN npm i $TESTVAR
-RUN $PRBUILD
-RUN echo "Test var: $TESTVAR"
+RUN npm i $PROD_FLAG
+RUN $PR_BUILD
 
 RUN ls
 
