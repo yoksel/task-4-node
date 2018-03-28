@@ -12,6 +12,11 @@ RUN mkdir /app
 
 WORKDIR /app
 
+RUN npm i $TESTVAR
+RUN $TESTVAR2
+RUN echo "Test var: $TESTVAR"
+RUN ls
+
 COPY . /app
 
 RUN git clone https://github.com/yoksel/test-git.git test-git
@@ -23,11 +28,8 @@ RUN for branch in $(git branch --all | grep '^\s*remotes' | egrep --invert-match
 
 WORKDIR /app
 
-EXPOSE 3000 8081
 
-RUN npm i $TESTVAR
-RUN $TESTVAR2
-RUN echo "Test var: $TESTVAR"
-RUN ls
+
+EXPOSE 3000 8081
 
 CMD npm start
