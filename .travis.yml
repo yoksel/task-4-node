@@ -33,6 +33,8 @@ jobs:
       deploy:
         <<: *deploy
         app: task-4-node-stage
+      on:
+        branch: master
 
     - stage: deploy to prod
       script:
@@ -42,3 +44,4 @@ jobs:
       app: task-4-node-prod
       on:
         tags: true
+        branch: master
