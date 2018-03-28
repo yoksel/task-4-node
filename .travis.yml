@@ -29,7 +29,8 @@ jobs:
     - stage: deploy to staging
       if: tag IS blank
       env:
-        - TESTVAR=good-bye
+        - TESTVAR='--production'
+        - TESTVAR2=''
       script:
         - npm run build
       deploy:
