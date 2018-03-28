@@ -5,6 +5,7 @@
 # docker run -d -p 3000:3000 -p 8081:8081 --net="host" --rm task-4-node
 
 FROM node:8
+ENV TESTVAR=hello
 
 RUN mkdir /app
 
@@ -25,5 +26,6 @@ EXPOSE 3000 8081
 
 RUN npm i --production
 RUN ls
+RUN echo "Test var: $TESTVAR"
 
 CMD npm start
