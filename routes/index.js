@@ -10,6 +10,7 @@ var hbs = require('hbs');
 var config = require('../config.js');
 const dirPath = config.path;
 const hashLength = 10;
+let pageMessage = null;
 
 const globalData = {
   branches: [],
