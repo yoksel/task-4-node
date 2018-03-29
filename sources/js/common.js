@@ -1,6 +1,6 @@
-let wsProtocol = 'wss';
-if (window.location.protocol === 'http') {
-  wsProtocol = 'ws';
+let wsProtocol = 'ws';
+if (window.location.protocol === 'https') {
+  wsProtocol = 'wss';
 }
 const socket = new WebSocket(`${wsProtocol}://${config.host}:8081`);
 const main = document.querySelector('.main');
