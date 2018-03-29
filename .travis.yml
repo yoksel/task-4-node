@@ -36,6 +36,7 @@ jobs:
         <<: *deploy
         app: task-4-node-stage
       on:
+        repo: yoksel/task-4-node
         branch: master
 
     - stage: deploy to prod
@@ -49,4 +50,6 @@ jobs:
         <<: *deploy
       app: task-4-node-prod
       on:
+        repo: yoksel/task-4-node
         all_branches: true
+        tags: true
