@@ -1,9 +1,12 @@
 {
   "name": "task-4-node",
+  "scripts": {},
+  "env": {},
   "formation": {
     "web": {
       "quantity": 1
     }
   },
+  "addons": [],
   "buildpacks": []
 }
