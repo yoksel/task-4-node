@@ -48,3 +48,5 @@ jobs:
       deploy:
         <<: *deploy
       app: task-4-node-prod
+      on:
+        all_branches: true
