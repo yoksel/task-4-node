@@ -33,7 +33,6 @@ jobs:
         <<: *deploy
         app: task-4-node-stage
       on:
-        all_branches: true
         repo: yoksel/task-4-node
 
     - stage: deploy to prod
