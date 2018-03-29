@@ -26,7 +26,7 @@ aliases:
 jobs:
   include:
     - stage: deploy to staging
-      if: tag IS blank
+      if: branch IS master AND tag IS blank
       script:
         - npm run build
       deploy:
