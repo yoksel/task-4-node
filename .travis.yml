@@ -39,6 +39,9 @@ jobs:
         branch: master
 
     - stage: deploy to prod
+      env:
+        - PROD_FLAG='--production'
+        - PR_BUILD=''
       script:
         - npm run build
       deploy:
