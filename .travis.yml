@@ -13,6 +13,10 @@ script:
 services:
   - docker
 
+before_install:
+  - docker build -t task-4-node .
+  - docker run -d -p 3000:3000 -p 8081:8081 --rm task-4-node
+
 aliases:
   deploy: &deploy
     provider: heroku
@@ -23,7 +27,6 @@ aliases:
 jobs:
   include:
     - stage: deploy to staging
-      if: tag IS blank
       script:
         - npm run build
       deploy:
@@ -31,8 +34,6 @@ jobs:
         app: task-4-node-stage
 
     - stage: deploy to prod
-      if: tag IS present
-      env:
       script:
         - npm run build
       deploy:
