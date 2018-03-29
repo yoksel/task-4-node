@@ -37,6 +37,7 @@ jobs:
         app: task-4-node-stage
       on:
         all_branches: true
+        repo: yoksel/task-4-node
 
     - stage: deploy to prod
       if: tag IS present
@@ -50,3 +51,4 @@ jobs:
       app: task-4-node-prod
       on:
         all_branches: true
+        repo: yoksel/task-4-node
