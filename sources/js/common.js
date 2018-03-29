@@ -1,4 +1,4 @@
-const wsProtocol = 'wss';
+let wsProtocol = 'wss';
 if (window.location.protocol === 'http') {
   wsProtocol = 'ws';
 }
