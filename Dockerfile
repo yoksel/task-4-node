@@ -19,6 +19,8 @@ WORKDIR /app
 
 COPY . /app
 
+RUN ./script.sh
+
 RUN npm i $PRODFLAG
 RUN $PRBUILD
 
