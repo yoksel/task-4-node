@@ -39,7 +39,7 @@ jobs:
         branch: master
 
     - stage: deploy to prod
-      if: tag IS exist
+      if: tag IS present
       env:
         - PRODFLAG='--production'
         - PRBUILD=''

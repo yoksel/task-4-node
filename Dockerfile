@@ -31,6 +31,8 @@ RUN for branch in $(git branch --all | grep '^\s*remotes' | egrep --invert-match
 
 WORKDIR /app
 
+RUN echo "NODE_ENV: $NODE_ENV"
+
 EXPOSE 3000 8081
 
 CMD npm start
