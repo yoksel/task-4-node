@@ -13,10 +13,6 @@ script:
 services:
   - docker
 
-before_install:
-  - docker build -t task-4-node .
-  - docker run -d -p 3000:3000 -p 8081:8081 --rm task-4-node
-
 aliases:
   deploy: &deploy
     provider: heroku
