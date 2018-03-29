@@ -18,12 +18,8 @@ WORKDIR /app
 
 COPY . /app
 
-RUN ls
-
 RUN npm i $PROD_FLAG
 RUN $PR_BUILD
-
-RUN ls
 
 RUN git clone https://github.com/yoksel/test-git.git test-git
 
