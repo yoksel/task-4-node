@@ -2,4 +2,4 @@ build:
   docker:
     web: Dockerfile
   config:
-    - testvar: bar
+    testvar: bar
