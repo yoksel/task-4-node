@@ -8,9 +8,10 @@ FROM node:8
 
 # For production sets to --production
 # & npm i install only production packages
-ENV PROD_FLAG=" "
+ENV PRODFLAG=" "
+
 # Runs build pull requests, for production is empty
-ENV PR_BUILD="npm run build"
+ENV PRBUILD="npm run build"
 
 RUN mkdir /app
 
@@ -18,8 +19,8 @@ WORKDIR /app
 
 COPY . /app
 
-RUN npm i $PROD_FLAG
-RUN $PR_BUILD
+RUN npm i $PRODFLAG
+RUN $PRBUILD
 
 RUN git clone https://github.com/yoksel/test-git.git test-git
 
@@ -29,8 +30,6 @@ WORKDIR /app/test-git
 RUN for branch in $(git branch --all | grep '^\s*remotes' | egrep --invert-match '(:?HEAD|master)$'); do git branch --track "${branch##*/}" "$branch"; done
 
 WORKDIR /app
-
-
 
 EXPOSE 3000 8081
 
