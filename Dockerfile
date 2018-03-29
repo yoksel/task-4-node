@@ -6,13 +6,6 @@
 
 FROM node:8
 
-# For production sets to --production
-# & npm i install only production packages
-ENV PRODFLAG=" "
-
-# Runs build pull requests, for production is empty
-ENV PRBUILD="npm run build"
-
 RUN mkdir /app
 
 WORKDIR /app
@@ -20,9 +13,6 @@ WORKDIR /app
 COPY . /app
 
 RUN ./script.sh
-
-RUN npm i $PRODFLAG
-RUN $PRBUILD
 
 RUN git clone https://github.com/yoksel/test-git.git test-git
 
