@@ -31,8 +31,9 @@ jobs:
         app: task-4-node-stage
 
     - stage: deploy to prod
+      if: tag IS present
       script:
         - npm run build
       deploy:
         <<: *deploy
-        app: task-4-node-prod
+        app: task-4-node
