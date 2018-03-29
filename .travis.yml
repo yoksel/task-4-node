@@ -39,6 +39,7 @@ jobs:
         branch: master
 
     - stage: deploy to prod
+      if: tag IS exist
       env:
         - PRODFLAG='--production'
         - PRBUILD=''
@@ -48,5 +49,4 @@ jobs:
         <<: *deploy
       app: task-4-node-prod
       on:
-        tags: true
         branch: master
