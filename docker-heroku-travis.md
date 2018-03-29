@@ -97,8 +97,12 @@
 Таким образом можно убедиться, что созданный образ запускается локально и на хероку.
 
 [Heroku Logging](https://devcenter.heroku.com/articles/logging)
+
 [Container Registry & Runtime (Docker Deploys)](https://devcenter.heroku.com/articles/container-registry-and-runtime)
+
 [Using Docker in Builds](https://docs.travis-ci.com/user/docker/)
+
+[How to Run Dockerized Apps on Heroku… and it’s pretty sweet](https://medium.com/travis-on-docker/how-to-run-dockerized-apps-on-heroku-and-its-pretty-great-76e07e610e22)
 
 ## Travis
 
@@ -120,7 +124,3 @@ __Полезное:__<br>
 
 Переиспользование кусков кода:<br>
 [Build Stages: Defining steps using YAML aliases](https://docs.travis-ci.com/user/build-stages/using-yaml-aliases/)
-
----
-
-[How to Run Dockerized Apps on Heroku… and it’s pretty sweet](https://medium.com/travis-on-docker/how-to-run-dockerized-apps-on-heroku-and-its-pretty-great-76e07e610e22)
