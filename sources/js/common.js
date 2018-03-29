@@ -1,4 +1,5 @@
-const socket = new WebSocket(`ws://${config.host}:8081`);
+const wsProtocol = window.location.protocol === 'https' ? 'wss' : 'ws';
+const socket = new WebSocket(`${wsProtocol}://${config.host}:8081`);
 const main = document.querySelector('.main');
 const message = document.querySelector('.message');
 let messageText = '';
