@@ -30,7 +30,7 @@ jobs:
         - npm run build
       deploy:
         <<: *deploy
-        app: task-4-node-stage
+        app: task-4-node
 
     - stage: deploy to prod
       if: tag IS present
@@ -40,6 +40,6 @@ jobs:
         - npm run build
       deploy:
         <<: *deploy
-        app: task-4-node
+        app: task-4-node-prod
         on:
           tags: true
