@@ -12,10 +12,8 @@ WORKDIR /app
 
 COPY . /app
 
-# RUN ./script.sh
-
-RUN npm i --production
-# RUN npm run build
+RUN npm i
+RUN npm run build
 
 RUN git clone https://github.com/yoksel/test-git.git test-git
 
@@ -25,9 +23,6 @@ WORKDIR /app/test-git
 RUN for branch in $(git branch --all | grep '^\s*remotes' | egrep --invert-match '(:?HEAD|master)$'); do git branch --track "${branch##*/}" "$branch"; done
 
 WORKDIR /app
-
-RUN echo "NODE_ENV: $NODE_ENV"
-RUN echo "testvar: $testvar"
 
 EXPOSE 3000 8081
 

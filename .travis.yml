@@ -24,8 +24,6 @@ jobs:
   include:
     - stage: deploy to staging
       if: tag IS blank
-      env:
-        testvar: stage
       script:
         - npm run build
       deploy:
@@ -34,8 +32,6 @@ jobs:
 
     - stage: deploy to prod
       if: tag IS present
-      env:
-        testvar: prod
       script:
         - npm run build
       deploy:
