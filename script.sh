@@ -1,6 +1,7 @@
 #!/bin/bash
 echo "Bash start -----------"
-echo "NODE_ENV: ($NODE_ENV)"
+
+echo "TESTVAR: ($TESTVAR)"
 
 if [ NODE_ENV == "production" ]
 then
