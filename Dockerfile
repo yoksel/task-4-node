@@ -6,12 +6,17 @@
 
 FROM node:8
 
+ENV TESTVAR=hello
+
 RUN mkdir /app
 
 WORKDIR /app
 
 COPY . /app
 
+RUN echo $TESTVAR;
+
+# Need optimization here
 RUN npm i
 RUN npm run build
 
