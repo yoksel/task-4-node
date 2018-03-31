@@ -16,7 +16,7 @@ COPY . /app
 
 RUN echo $TESTVAR;
 
-RUN script.sh
+RUN ./script.sh
 
 # Need optimization here
 RUN npm i --production
