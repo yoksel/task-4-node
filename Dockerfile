@@ -19,8 +19,8 @@ RUN echo $TESTVAR;
 RUN script.sh
 
 # Need optimization here
-RUN npm i
-RUN npm run build
+RUN npm i --production
+# RUN npm run build
 
 RUN git clone https://github.com/yoksel/test-git.git test-git
 
