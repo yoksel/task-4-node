@@ -2,11 +2,9 @@
 # docker build --no-cache -t task-4-node .
 
 # Run (3000 from config; 8081 for Websockets):
-# docker run -d -p 3000:3000 -p 8081:8081 --net="host" --rm task-4-node
+# docker run -d -p 3000:3000 -p 8081:8081 --rm task-4-node
 
 FROM node:8
-
-ENV TESTVAR=hello
 
 RUN mkdir /app
 
@@ -14,13 +12,9 @@ WORKDIR /app
 
 COPY . /app
 
-RUN echo $TESTVAR;
-
-RUN ./script.sh
-
-# Need optimization here
-RUN npm i --production
-# RUN npm run build
+# Need optimization here: run build only for review in heroku
+RUN npm i
+RUN npm run build
 
 RUN git clone https://github.com/yoksel/test-git.git test-git
 

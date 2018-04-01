@@ -6,7 +6,9 @@
     "start": "node app.js",
     "build": "gulp build",
     "dev": "gulp start",
-    "lint": "eslint '**/*.js' && stylelint sources/**/*.scss",
+    "jslint": "eslint '**/*.js'",
+    "csslint": "stylelint sources/**/*.scss",
+    "lint": "npm run jslint && npm run csslint",
     "test": "nyc mocha --exit",
     "hermione": "hermione"
   },
